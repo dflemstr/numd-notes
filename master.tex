@@ -18,8 +18,8 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 
-\setmainfont[Mapping=tex-text,Ligatures={Common},Numbers={OldStyle},Contextuals={Alternate},Scale=MatchLowercase]{Garamond Premier Pro}
-\setsansfont[Scale=MatchLowercase]{Futura Std}
+\setmainfont[Mapping=tex-text,Ligatures={Common},Numbers={OldStyle},Contextuals={Alternate},Scale=MatchLowercase]{Garamond
+  Premier Pro} \setsansfont[Scale=MatchLowercase]{Futura Std}
 \setmonofont[Scale=MatchLowercase]{PragmataPro}
 
 \usemintedstyle{friendly}
@@ -203,15 +203,20 @@ Vilka fel finns i approximationen?
   \begin{align}
     f(a+h) &= f(a) + h f'(a) + \frac{1}{2}h^2 f''(a) + \ldots +
     \frac{1}{k!} h^kf^{(k)}(a) \\
-    \Delta h &= \frac{1}{h}\left(h f'(a) + \frac{1}{2}h^2 f''(a) + O\left(h^3\right)\right) \\
+    \Delta h &= \frac{1}{h}\left(h f'(a) + \frac{1}{2}h^2 f''(a) +
+    O\left(h^3\right)\right) \\
     &= f'(a)+\frac{1}{2}h f''(a) + O(h^2)
   \end{align}
-  Trunkeringsfelet är $\Delta h - f'(a)=\underbrace{\frac{1}{2}h f''(a)}_{\mathclap{\text{Dominerande delen av felet}}}+O(h^2)$
+  Trunkeringsfelet är $\Delta h - f'(a)=\underbrace{\frac{1}{2}h
+    f''(a)}_{\mathclap{\text{Dominerande delen av felet}}}+O(h^2)$
 
   Således är trunkeringsfelet $\propto h$, noggrannhetsordning 1.
 \item[Precisionsfel] är fel pga. fel i funktionsvärdena.
 
-Låt $f(x)$ representeras av $\tilde{f}(x)$ i datorn. Pga. ändlig precision så gäller att $f(x)\neq\tilde{f}(x)$. Låt $\tilde{f}(x)=f(x)+\epsilon_{f(x)}$. Antag att $|\epsilon_{f(x)}|\leq E_f, \forall x \in D_f$.
+Låt $f(x)$ representeras av $\tilde{f}(x)$ i datorn. Pga. ändlig
+precision så gäller att $f(x)\neq\tilde{f}(x)$. Låt
+$\tilde{f}(x)=f(x)+\epsilon_{f(x)}$. Antag att $|\epsilon_{f(x)}|\leq
+E_f, \forall x \in D_f$.
 
 \begin{equation}
 \tilde{\Delta}_h = \frac{\tilde{f}(a+h)-\tilde{f}(a)}{h} =
@@ -219,7 +224,8 @@ Låt $f(x)$ representeras av $\tilde{f}(x)$ i datorn. Pga. ändlig precision så
 \end{equation}
 
 \begin{equation}
-\Delta_h + \frac{\epsilon_{f(a+h)}-\epsilon_{f(a)}}{h} \qquad \text{så} \qquad |\epsilon_h| \leq \frac{2 E_f}{h}
+\Delta_h + \frac{\epsilon_{f(a+h)}-\epsilon_{f(a)}}{h} \qquad
+\text{så} \qquad |\epsilon_h| \leq \frac{2 E_f}{h}
 \end{equation}
 \end{description}
 
@@ -310,11 +316,13 @@ y = [60; 20; 83; 62];
 x = A \ y;
 \end{matlabcode}
 
-Vi vet att $A\vec{x}=\vec{y}$. Vi kan bilda residualvektorn $\vec{r}=\vec{y}-A\vec{x}$
+Vi vet att $A\vec{x}=\vec{y}$. Vi kan bilda residualvektorn
+$\vec{r}=\vec{y}-A\vec{x}$
 
 \subsubsection{Geometrisk tolkning}
 
-Vad avses med bästa $\vec{x}$? Jo den vektor som gör $\vec{r}$ så liten som möjligt. liten avser den euklidiska normen.
+Vad avses med bästa $\vec{x}$? Jo den vektor som gör $\vec{r}$ så
+liten som möjligt. Liten avser den euklidiska normen.
 
 \begin{equation}
 ||\vec{r}||_2 = \sqrt{r_1^2 + r_2^2 + \ldots + r_m^2}
@@ -375,8 +383,9 @@ plot(TP, PP, 'o');
 
 \subsection{Problem}
 
-Givet mätvärden $(t_1, y_1), i=1,2,\ldots,m$ och en linjär funktion (modell)
-$F=C_1 \Phi_1(t) + C_2\Phi_2(t) + \ldots + C_n\Phi_n(t), m > n$ med okända koefficienter $\vec{C}$.
+Givet mätvärden $(t_1, y_1), i=1,2,\ldots,m$ och en linjär funktion
+(modell) $F=C_1 \Phi_1(t) + C_2\Phi_2(t) + \ldots + C_n\Phi_n(t), m >
+n$ med okända koefficienter $\vec{C}$.
 
 Bestäm bästa $\vec{C}$.
 
