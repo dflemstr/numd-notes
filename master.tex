@@ -1,0 +1,476 @@
+\documentclass[a4paper,10pt,swedish]{memoir}
+
+\usepackage{listings}
+\usepackage{minted}
+%\usepackage{fancyhdr}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\DeclareUTFcharacter[\UTFencname]{x00A0}{\nobreakspace}
+\usepackage{polyglossia}
+\usepackage[pdfusetitle,bookmarks=true,
+ bookmarksnumbered=true,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,
+ colorlinks=false]{hyperref}
+\usepackage{color}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{tikz}
+
+\setmainfont[Mapping=tex-text,Ligatures={Common},Numbers={OldStyle},Contextuals={Alternate},Scale=MatchLowercase]{Garamond Premier Pro}
+\setsansfont[Scale=MatchLowercase]{Futura Std}
+\setmonofont[Scale=MatchLowercase]{PragmataPro}
+
+\usemintedstyle{friendly}
+\renewcommand{\theFancyVerbLine}{
+  \textcolor[rgb]{0.5,0.5,0.5}{\scriptsize
+    \arabic{FancyVerbLine}}}
+
+\newminted{matlab}{}
+\newmint{matlab}{}
+\newminted{text}{}
+
+%\pagestyle{fancy}
+%\lhead{DN1241 - Numerical Methods}
+%\renewcommand{\headrulewidth}{0pt}
+
+\setdefaultlanguage{swedish}
+
+\chapterstyle{section}
+\setcounter{tocdepth}{3}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\setlength{\intextsep}{0pt}
+
+\numberwithin{equation}{subsection}
+
+\title{Anteckningar - DN1241 - Numerical Methods}
+\author{Källa: Fabian Bergmark, Typsättning: David Flemström}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\chapter{Föreläsning 1}
+\section{Lokal linjärisering}
+
+Nästan alla funktioner kan lokalt ersättas med plana linjer.
+
+Grundidé:
+
+\begin{itemize}
+\item Ekvationslösning
+\item Derivataskattning
+\item Lösa differentialekvationer
+\item Integraler
+\item Felanalys
+\end{itemize}
+
+Vi arbetar endast med funktioner som är lokalt linjäriserbara.
+
+\section{Matlab}
+
+\begin{matlabcode}
+x = -5:0.1:10;
+y = x - 4 * sin(2 * x) - 3;
+plot(x, y);
+subplot(2, 2, 1);
+diary linekv.d;
+diary off;
+\end{matlabcode}
+
+\subsection{Tilldelning}
+
+\begin{matlabcode}
+a = 3 % (= 3 + 0*i)
+z = 5 + 2;
+x = [1; 2; 7]; % För att referera till element: x(2) => 2
+A = [1 2; 5 9];
+A = zeros(10, 10); % A(5, 1) => 0
+\end{matlabcode}
+
+\subsection{Utskrift}
+
+Använd inte semikolon.
+
+\begin{matlabcode}
+disp(x); % skriver endast ut värdet
+format long;
+\end{matlabcode}
+
+\subsection{Inmatning}
+\matlab:r = input('Ge räntesatsen');:
+
+\subsection{Programkonstruktion}
+Repetitionssatser
+
+\begin{matlabcode}
+for i = 1:5
+    disp('*');
+end
+
+i = 0;
+while (i < 5)
+    i = i + 1;
+    disp('*');
+end
+\end{matlabcode}
+
+\subsection{Matematiska operatorer}
+
+\begin{matlabcode}
+.*, ./, .^
+sin(), exp(), sqrt()
+\end{matlabcode}
+
+\subsection*{Problem}
+
+\begin{align}
+y&=x-4\cdot\sin\left(2x\right)-3=0\\
+f(x)&=0\\
+x&\approx 1.732 \qquad\text{(Enligt bild)}
+\end{align}
+
+Vi vill ha ett fel $<10^{-16}$
+
+\section{Newtons metod}
+
+$x_i$ är en approximativ lösning.
+
+\begin{align}
+y-y_i &= f'(x_i)(x-x_i) &\text{Tangentens ekvation}\\
+y&=f(x_i)+f'(x_i)(x-x_i) &\text{Linjens ekvation}
+\end{align}
+
+Vi söker räta linjens skärning med x-axeln; sätt $y=0$.
+
+\begin{align}
+0&=f(x_i)+f'(x_i)(x-x_i)
+x_{i+1}=x_i-\frac{f(x_i)}{f'(x_i)}
+\end{align}
+
+Matlab:
+
+\begin{matlabcode}
+x = 1.732;
+f = x - 4 * sin(2 * x) - 3;
+fp = 1 - 8 * cos(2 * x); % = f'(x)
+h = f / fp
+x = x - h
+\end{matlabcode}
+
+\section{Felbegrepp}
+
+$\tilde{x}$ approximerar $x$. Ex $\tilde{x}=3.14, x=\pi$
+
+\begin{align}
+\tilde{x}-x\qquad&\text{absolutfelet} \qquad e_x \\
+\frac{\tilde{x}-x}{x}\qquad&\text{relativa felet}\qquad r_x
+\end{align}
+
+\section{Felgränser}
+
+\begin{align}
+|e_x| &\leq E_x \\
+|r_x| &\leq R_x
+\end{align}
+
+Ex.
+
+\begin{align}
+g&=9.81\pm 0.005 \\
+\tilde{g}&=9.81 \\
+E_x&=0.005
+\end{align}
+
+\subsection{Exempel}
+
+\begin{align}
+f(x)&=e^x\\
+f'(x)&=e^x
+\end{align}
+
+\subsubsection{Analys}
+
+Vilka fel finns i approximationen?
+
+\begin{description}
+\item[Trunkeringsfel]
+  kan analyseras m.h.a. Tailorutv.
+  \begin{align}
+    f(a+h) &= f(a) + h f'(a) + \frac{1}{2}h^2 f''(a) + \ldots +
+    \frac{1}{k!} h^kf^{(k)}(a) \\
+    \Delta h &= \frac{1}{h}\left(h f'(a) + \frac{1}{2}h^2 f''(a) + O\left(h^3\right)\right) \\
+    &= f'(a)+\frac{1}{2}h f''(a) + O(h^2)
+  \end{align}
+  Trunkeringsfelet är $\Delta h - f'(a)=\underbrace{\frac{1}{2}h f''(a)}_{\mathclap{\text{Dominerande delen av felet}}}+O(h^2)$
+
+  Således är trunkeringsfelet $\propto h$, noggrannhetsordning 1.
+\item[Precisionsfel] är fel pga. fel i funktionsvärdena.
+
+Låt $f(x)$ representeras av $\tilde{f}(x)$ i datorn. Pga. ändlig precision så gäller att $f(x)\neq\tilde{f}(x)$. Låt $\tilde{f}(x)=f(x)+\epsilon_{f(x)}$. Antag att $|\epsilon_{f(x)}|\leq E_f, \forall x \in D_f$.
+
+\begin{equation}
+\tilde{\Delta}_h = \frac{\tilde{f}(a+h)-\tilde{f}(a)}{h} =
+\frac{f(a+h) + \epsilon_{f(a+h)} - f(a) - \epsilon_{f(a)}}{h}
+\end{equation}
+
+\begin{equation}
+\Delta_h + \frac{\epsilon_{f(a+h)}-\epsilon_{f(a)}}{h} \qquad \text{så} \qquad |\epsilon_h| \leq \frac{2 E_f}{h}
+\end{equation}
+\end{description}
+
+\subsubsection{Matlab}
+
+\begin{matlabcode}
+f = inline('exp(x)', 'x');
+h = 1; a = 1; ea = f(a); format long; format compact;
+
+for i = 1:8
+    fp = (f(a+h) - f(a) / h);
+    disp([h fp]);
+    h = h / 10;
+end
+\end{matlabcode}
+
+\section{Egendefinierade funktioner}
+
+Definieras i egen fil \verb:f2a.m:.
+
+\begin{matlabcode}
+function r = f2a(x)
+    % r är returvärde
+    % f2a funktionsnamn
+    % x argument
+    r = x.^2 - 2;
+
+test = f2a([1; 2]) % => [-1; 2]
+\end{matlabcode}
+
+\newpage
+
+\chapter{Föreläsning 2}
+
+\subsection{Exempel}
+
+En person märker ut avstånd genom att stega.
+
+\begin{figure}[h]
+\vspace{1cm}
+\centering
+\begin{tikzpicture}
+  \draw (0,0) -- (10,0);
+  \foreach \x/\xtext in {0/ ,6/$x_1$,8/$x_2$,10/$100$}
+    \draw (\x,0pt) -- (\x,-3pt) node[below] {\xtext};
+\end{tikzpicture}
+\caption{Två utmärkta punkter längs en tallinje.}
+\end{figure}
+
+\begin{equation}
+x_1\approx 60 \qquad
+x_2\approx 80 \qquad
+x_2-x_1\approx 20 \qquad
+100 - x_2\approx17 \qquad
+100 - x_1 \approx38
+\end{equation}
+
+Vi har ett system:
+
+\begin{align}
+A\vec{x}&=\vec{y} \qquad
+A &=
+\left[ \begin{array}{cc}
+1 & 0 \\
+-1 & 1 \\
+0 & 1 \\
+1 & 0
+\end{array}\right] \\
+\vec{x} &= \left[\begin{array}{c}
+x_1 \\
+x_2
+\end{array}\right] \qquad
+\vec{y} &= \left[\begin{array}{c}
+60 \\
+20 \\
+83 \\
+62
+\end{array}\right]
+\end{align}
+
+4 ekv, 2 obekanta; överbestämt ekvationssystem.
+
+\subsubsection{Matlab}
+
+\begin{matlabcode}
+A = [1 0; -1 1; 0 1; 1 0];
+y = [60; 20; 83; 62];
+x = A \ y;
+\end{matlabcode}
+
+Vi vet att $A\vec{x}=\vec{y}$. Vi kan bilda residualvektorn $\vec{r}=\vec{y}-A\vec{x}$
+
+\subsubsection{Geometrisk tolkning}
+
+Vad avses med bästa $\vec{x}$? Jo den vektor som gör $\vec{r}$ så liten som möjligt. liten avser den euklidiska normen.
+
+\begin{equation}
+||\vec{r}||_2 = \sqrt{r_1^2 + r_2^2 + \ldots + r_m^2}
+\end{equation}
+
+Vi kan använda residualvektorn för felkontroll.
+
+\begin{align}
+A^TA \vec{x} &= A^T\vec{y} \\
+0 &= A^T(\vec{y}-A\vec{x}) = A^T \vec{r}
+\end{align}
+
+Vi kan således kontrollera våra beräkningar med $A^T\vec{r} = 0$.
+
+\section{Linjär modellanpassning}
+
+Modell: Rät linje $p(t) = C_1 + C_2 t$
+
+Data: \[\left[\begin{array}{cc}40&55.3\\45&71.9\\50&92.5\\55&118.0\\60&149.9\end{array}\right]\]
+
+\begin{align}
+C_1 + C_2 \cdot 40 &= 55.3 \\
+C_1 + C_2 \cdot 45 &= 71.9 \\
+&\vdots
+\end{align}
+
+\begin{equation}
+A\vec{c}\approx \vec{p}
+\end{equation}
+
+Vi ställer upp och löser
+
+\begin{align}
+A^TA\vec{c}&=A^T\vec{p}
+\vec{c}=(A^TA)^{-1}A^T\vec{p}
+\end{align}
+
+\subsection{Utvigningar}
+
+Modell: $q(t) = C_1 + C_2 t + C_3 t^2$
+
+Matlab:
+
+\begin{matlabcode}
+% Indata
+T = 40:5:60;
+p = [55.3 ...];
+
+% Formulera och lös systemet.
+A = [ones(size(T))' T' T.^2'];
+c = A \ p;
+r = p - A * c;
+TP = 40:0.1:60;
+PP = c(1) + c(2)*TP + c(3)*TP.^2;
+
+plot(TP, PP, 'o');
+\end{matlabcode}
+
+\subsection{Problem}
+
+Givet mätvärden $(t_1, y_1), i=1,2,\ldots,m$ och en linjär funktion (modell)
+$F=C_1 \Phi_1(t) + C_2\Phi_2(t) + \ldots + C_n\Phi_n(t), m > n$ med okända koefficienter $\vec{C}$.
+
+Bestäm bästa $\vec{C}$.
+
+Anm: $\vec{\Phi}(t)$ är basfunktionerna, kända.
+
+\begin{equation}
+\vec{\Phi}_1 = \left[\begin{array}{c}
+\Phi_1(t_1) \\
+\Phi_1(t_2) \\
+\vdots \\
+\Phi_1(t_m) \\
+\end{array}\right] \in \mathbb{R}^m
+\end{equation}
+
+Anm: om $m=n$ får vi interpolation.
+
+Exempel på basfunktioner:
+
+\begin{align}
+\Phi(t) &= t^{i-1}, i = 1,2,\ldots,n \qquad \text{Polynom bas} \\
+\Phi_1(t) &= 1, \Phi_2(t) = t-k, \Phi_3(t) = (t-k)^2, k = \sum_{i=1}^{m}\frac{t_i}{m} \\
+\Phi(t) &= \left[1, cos(t), sin(t), cos(2t), sin(2t)\right]
+\end{align}
+
+\subsubsection{Arbetsgång}
+
+Sätt in $(t_i, y_i), i=1\ldots m$ i modellen.
+
+\begin{align}
+C_1\Phi_1(t_1) + C_2\Phi_2(t_1) + \ldots + C_n\Phi_n(t_1) &\approx y_1 \\
+\vdots &\vdots \\
+C_1\Phi_1(t_m) + C_2\Phi_2(t_m) + \ldots + C_n\Phi_n(t_m) &\approx y_m
+\end{align}
+\begin{equation}
+A\cdot \vec{C} \approx \vec{y} \qquad A=\left[\Phi_1,\Phi_2, \ldots,\Phi_n\right]
+\end{equation}
+
+Lös med normalekvationerna.
+
+\begin{equation}
+\vec{r} = \vec{r} - A\vec{C}
+\end{equation}
+
+\begin{align*}
+\Phi(\vec{C}) &= ||\vec{r}||_2^2 = \vec{r}^T\vec{r} = (\vec{y}-A\vec{C})^T(\vec{y}-A\vec{C}) \\
+&= (\vec{y}^T-\vec{C}^TA^T)(\vec{y}-A\vec{C})=\vec{y}^T\vec{y}-\vec{y}^TA\vec{C} - \vec{C}^TA^T\vec{y} + \vec{C}^TA^TA\vec{C} \\
+&= \vec{C}^TA^TA\vec{C}-2\vec{C}^TA^T\vec{y} + \vec{y}^T\vec{y}
+\end{align*}
+\begin{align}
+\nabla\vec{C}\Phi(\vec{C})&=0 \qquad \text{ger minimit} \\
+\nabla\vec{C}\Phi(\vec{C})&=0=2A^TA\vec{C}-2A^T\vec{y} \\
+A^TA\vec{C}&=A^T\vec{y}
+\end{align}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l}
+x & y \\ \hline
+15 & 15 \\
+16 & 8 \\
+17 & 5 \\
+18 & 3 \\
+19 & 3
+\end{tabular}
+\caption{Exempelmätvärden}
+\end{table}
+
+\begin{align}
+F(x)&=a_1 + a_2 x + a_3x^2 \qquad &\text{(ger stora tal)} \\
+F(x)&=C_1 + C_2(x-m) + C_3(x-m)^2, m=17 \qquad &\text{centrering}
+\end{align}
+
+\section{Vektor och matrisnormer}
+
+\begin{align}
+||\vec{x}||_2 &= \sqrt{x_1^2 + x_2^2 + \ldots + x_n^2} = \sqrt{\vec{x}^T\cdot\vec{x}} \\
+||\vec{x}||_p = \sqrt[p]{x_1^p+x_2^p+\ldots+x^p_n}
+\end{align}
+
+En norm är ett icke-negativt mätetal för vektorer.
+
+\subsection{Axiom}
+
+\begin{align}
+||\vec{x}|| & > 0 \forall \vec{x} \neq \vec{0} \\
+||\vec{x}|| & = 0 \qquad \text{omm} \qquad \vec{x}=\vec{0} \\
+||\alpha\vec{x}||&=|\alpha|\cdot||\vec{x}||, \qquad\text{$\alpha$ skalär} \\
+||\vec{x}+\vec{y}|| &\leq ||\vec{x}||+||\vec{y}|| \\
+p &= \infty \qquad \text{maxnormen}\\
+||\vec{x}||_\infty &= \text{max}(\vec{x})
+\end{align}
+
+\chapter{Föreläsning 3}
+
+% TODO
+
+\end{document}
